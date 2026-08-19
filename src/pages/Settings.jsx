@@ -162,7 +162,7 @@ export default function Settings() {
                 type="email"
                 value={settings.smtp_username || ''}
                 onChange={(e) => setSettings({ ...settings, smtp_username: e.target.value })}
-                placeholder="your-gmail-address@gmail.com"
+                placeholder="info.blueboxx@gmail.com"
                 className="w-full glass-input px-3 py-2 rounded-xl text-xs text-white"
               />
             </div>
@@ -173,7 +173,7 @@ export default function Settings() {
                 type="password"
                 value={settings.smtp_password || ''}
                 onChange={(e) => setSettings({ ...settings, smtp_password: e.target.value })}
-                placeholder="xxxx xxxx xxxx xxxx"
+                placeholder="iiwg dsnc xyrl wnnm"
                 className="w-full glass-input px-3 py-2 rounded-xl text-xs font-mono"
               />
             </div>
@@ -184,7 +184,7 @@ export default function Settings() {
                 type="email"
                 value={settings.smtp_from_email || ''}
                 onChange={(e) => setSettings({ ...settings, smtp_from_email: e.target.value })}
-                placeholder="your-gmail-address@gmail.com"
+                placeholder="info.blueboxx@gmail.com"
                 className="w-full glass-input px-3 py-2 rounded-xl text-xs"
               />
             </div>
