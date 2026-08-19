@@ -31,7 +31,7 @@ export default function LeadDetail() {
   // Email state
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
-  const [emailProvider, setEmailProvider] = useState('brevo');
+  const [emailProvider, setEmailProvider] = useState('smtp');
   const [sendingEmail, setSendingEmail] = useState(false);
   const [aiGenerating, setAiGenerating] = useState(false);
 

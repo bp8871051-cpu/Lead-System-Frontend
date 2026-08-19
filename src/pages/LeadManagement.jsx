@@ -70,7 +70,7 @@ export default function LeadManagement() {
   const [directEmailData, setDirectEmailData] = useState({
     subject: 'Growth Opportunities & Digital Solutions for {{business_name}}',
     body: 'Hi {{contact_name}},\n\nI was looking at business profiles in {{city}} and noticed {{business_name}}.\n\nWe specialize in helping businesses like yours attract more local clients through custom web solutions and automated CRM outreach.\n\nWould you be available for a brief 5-minute chat this week?\n\nBest regards,\nOutreach Team',
-    provider: 'brevo',
+    provider: 'smtp',
   });
 
   // AI Generator options
@@ -269,7 +269,7 @@ export default function LeadManagement() {
         lead_id: aiResult.lead_id,
         subject: aiResult.subject,
         body: aiResult.body,
-        provider: 'brevo',
+        provider: 'smtp',
       });
       if (res.data?.success) {
         toast.success(res.data.message || 'Outreach email sent successfully!');
@@ -1116,14 +1116,10 @@ export default function LeadManagement() {
               </div>
 
               <div className="flex items-center justify-between pt-2">
-                <select
-                  value={directEmailData.provider}
-                  onChange={(e) => setDirectEmailData({ ...directEmailData, provider: e.target.value })}
-                  className="glass-input px-3 py-1.5 rounded-lg text-xs bg-slate-900 text-slate-300"
-                >
-                  <option value="brevo">Brevo API</option>
-                  <option value="smtp">Custom SMTP Server</option>
-                </select>
+                <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  Gmail SMTP
+                </span>
 
                 <div className="flex gap-2">
                   <button

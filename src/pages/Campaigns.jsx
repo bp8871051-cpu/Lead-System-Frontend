@@ -15,7 +15,7 @@ export default function Campaigns() {
     service: 'Website Development',
     email_template_id: '',
     daily_sending_limit: 100,
-    sending_provider: 'brevo',
+    sending_provider: 'smtp',
     lead_ids: [],
   });
 
@@ -187,7 +187,7 @@ export default function Campaigns() {
       {/* Modal: Create Campaign */}
       {createModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="glass-panel w-full max-w-lg p-6 rounded-2xl border border-slate-800 space-y-4">
+          <div className="glass-panel w-full max-w-lg p-4 sm:p-6 rounded-2xl border border-slate-800 space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="text-base font-bold text-white">Create New Outreach Campaign</h3>
 
             <form onSubmit={handleSubmit} className="space-y-4">

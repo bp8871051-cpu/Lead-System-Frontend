@@ -376,18 +376,14 @@ export default function CorporateEmailModal({ lead, onClose, onSent }) {
         </div>
 
         {/* Footer Toolbar */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <select
-              value={provider}
-              onChange={(e) => setProvider(e.target.value)}
-              className="glass-input px-3 py-1.5 rounded-xl text-xs bg-slate-950 text-slate-300"
-            >
-              <option value="smtp">Gmail / Custom SMTP</option>
-              <option value="brevo">Brevo API Provider</option>
-            </select>
+        <div className="p-3 sm:p-4 border-t border-slate-800 bg-slate-900/90 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[11px] sm:text-xs bg-slate-950 text-emerald-400 font-semibold border border-slate-800 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Gmail SMTP
+            </span>
             <span className="text-[11px] text-slate-400 hidden sm:inline">
-              Sends 100% exact Blade HTML email to inbox.
+              Sends 100% exact corporate HTML email to inbox.
             </span>
           </div>
 
