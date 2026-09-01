@@ -68,8 +68,8 @@ export default function LeadManagement() {
 
   // Direct Email Form State
   const [directEmailData, setDirectEmailData] = useState({
-    subject: 'Growth Opportunities & Digital Solutions for {{business_name}}',
-    body: 'Hi {{contact_name}},\n\nI was looking at business profiles in {{city}} and noticed {{business_name}}.\n\nWe specialize in helping businesses like yours attract more local clients through custom web solutions and automated CRM outreach.\n\nWould you be available for a brief 5-minute chat this week?\n\nBest regards,\nOutreach Team',
+    subject: 'Quick question regarding {{business_name}}',
+    body: 'Hi {{contact_name}},\n\nI came across {{business_name}} in {{city}} and wanted to reach out with a couple of quick ideas for your digital presence and customer reach.\n\nWe help businesses build modern websites, automated lead systems, and streamline their client outreach.\n\nWould you be open to a brief 5-minute chat next Tuesday?\n\nWarm regards,\nSumedh Agrawal\nBLUEBOXX.DA PRIVATE LIMITED',
     provider: 'smtp',
   });
 

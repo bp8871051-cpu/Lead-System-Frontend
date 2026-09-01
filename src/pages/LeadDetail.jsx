@@ -44,8 +44,8 @@ export default function LeadDetail() {
       if (res.data?.success) {
         const lData = res.data.data;
         setLead(lData);
-        setEmailSubject(`Special Proposal & Digital Growth Solutions for ${lData.business_name}`);
-        setEmailBody(`Hi ${lData.contact_name || lData.business_name},\n\nI was looking at business profiles in ${lData.city || 'your city'} and noticed ${lData.business_name}.\n\nWe specialize in helping local businesses increase revenue and streamline customer acquisition through custom digital solutions.\n\nWould you be open for a quick 5-minute call this week?\n\nBest regards,\nOutreach Team`);
+        setEmailSubject(`Quick question regarding ${lData.business_name}`);
+        setEmailBody(`Hi ${lData.contact_name || lData.business_name},\n\nI came across ${lData.business_name} in ${lData.city || 'your city'} and wanted to reach out with a couple of quick ideas for your digital presence and local reach.\n\nWe help businesses build modern websites, automated lead systems, and streamline client outreach.\n\nWould you be open to a brief 5-minute chat next Tuesday?\n\nWarm regards,\nSumedh Agrawal\nBLUEBOXX.DA PRIVATE LIMITED`);
       }
     } catch (err) {
       toast.error('Failed to load lead details');

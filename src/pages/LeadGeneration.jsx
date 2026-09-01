@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Search, MapPin, Globe, Star, Play, CheckCircle2, Loader2, AlertCircle, RefreshCw, Cpu, Zap } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Sparkles, Search, MapPin, Globe, Star, Play, CheckCircle2, Loader2, AlertCircle, RefreshCw, Cpu, Zap, ArrowRight, ExternalLink } from 'lucide-react';
 import { scrapingApi } from '../api';
 import { useToast } from '../context/ToastContext';
 
 export default function LeadGeneration() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     keyword: 'Restaurants',
     location: 'Ahmedabad, Gujarat',
@@ -12,7 +14,7 @@ export default function LeadGeneration() {
     country: 'India',
     requested_count: 50,
     rating_min: 4.0,
-    website_filter: 'no_website',
+    website_filter: 'all',
     engine: 'direct',
   });
 
@@ -29,7 +31,7 @@ export default function LeadGeneration() {
         setJobs(res.data.data.data || []);
       }
     } catch (err) {
-      toast.error('Failed to load scraping jobs');
+      // Ignore background refresh errors
     } finally {
       setLoading(false);
     }
@@ -37,13 +39,25 @@ export default function LeadGeneration() {
 
   useEffect(() => {
     fetchJobs();
-    const interval = setInterval(fetchJobs, 5000);
+    const interval = setInterval(fetchJobs, 4000);
     return () => clearInterval(interval);
   }, []);
 
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    setFormData({ ...formData, [e.target.name]: value });
+    const name = e.target.name;
+
+    if (name === 'location') {
+      const parts = value.split(',');
+      setFormData({
+        ...formData,
+        location: value,
+        city: parts[0]?.trim() || '',
+        state: parts[1]?.trim() || formData.state,
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -52,7 +66,8 @@ export default function LeadGeneration() {
     try {
       const res = await scrapingApi.startScraping(formData);
       if (res.data?.success) {
-        toast.success(res.data.message || 'Leads scraped & saved successfully!');
+        const savedCount = res.data.data?.leads_saved ?? 0;
+        toast.success(`Scraping complete! ${savedCount} leads saved to CRM database.`);
         fetchJobs();
       }
     } catch (err) {
@@ -65,16 +80,26 @@ export default function LeadGeneration() {
   return (
     <div className="space-y-8">
       {/* Title */}
-      <div>
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
-            <Sparkles className="w-5 h-5" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Lead Generation & Web Scraper</h1>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Lead Generation & Web Scraper</h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Scrape verified businesses directly from Google Maps, OpenStreetMap & Web directory search engines.
+          </p>
         </div>
-        <p className="text-sm text-slate-400 mt-1">
-          Scrape verified businesses directly from Google Maps, OpenStreetMap & Web directory search engines.
-        </p>
+
+        <Link
+          to="/leads"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-sm font-semibold transition-all"
+        >
+          <span>View All Leads in CRM</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -102,7 +127,7 @@ export default function LeadGeneration() {
                 >
                   <Zap className="w-4 h-4 text-amber-400" />
                   <span>⚡ Fast Direct Scraper</span>
-                  <span className="text-[9px] font-normal text-slate-400">Instant / Built-in</span>
+                  <span className="text-[9px] font-normal text-slate-400">Overpass / OSM / Web</span>
                 </button>
 
                 <button
@@ -133,7 +158,7 @@ export default function LeadGeneration() {
                   required
                   value={formData.keyword}
                   onChange={handleChange}
-                  placeholder="e.g. Restaurants, Gyms, Real Estate, Clinics"
+                  placeholder="e.g. Restaurants, Gyms, Real Estate, Hospitals"
                   className="w-full glass-input pl-9 pr-3 py-2.5 rounded-xl text-sm"
                 />
               </div>
@@ -166,7 +191,7 @@ export default function LeadGeneration() {
                   type="number"
                   name="requested_count"
                   min={5}
-                  max={1000}
+                  max={200}
                   required
                   value={formData.requested_count}
                   onChange={handleChange}
@@ -204,9 +229,9 @@ export default function LeadGeneration() {
                 onChange={handleChange}
                 className="w-full glass-input px-3 py-2.5 rounded-xl text-sm bg-slate-900"
               >
-                <option value="all">All Businesses</option>
-                <option value="no_website">No Website Only (High-Value Web Dev Leads)</option>
-                <option value="has_website">Has Website Only</option>
+                <option value="all">All Businesses (With & Without Website)</option>
+                <option value="no_website">No Website Only (Web Dev & Agency Leads)</option>
+                <option value="has_website">Has Website Only (Digital Outreach)</option>
               </select>
             </div>
 
@@ -243,6 +268,7 @@ export default function LeadGeneration() {
             <button
               onClick={fetchJobs}
               className="p-2 rounded-lg glass-card hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+              title="Refresh jobs"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
@@ -255,13 +281,13 @@ export default function LeadGeneration() {
               <p className="text-xs">Fill out the search criteria on the left to start collecting leads!</p>
             </div>
           ) : (
-            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-[540px] overflow-y-auto pr-1">
               {jobs.map((job) => (
                 <div
                   key={job.id}
                   className="glass-card p-4 rounded-xl border border-slate-800/80 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-slate-700/80 transition-all"
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs font-bold text-indigo-400">{job.job_number}</span>
                       <span
@@ -283,24 +309,42 @@ export default function LeadGeneration() {
                       "{job.keyword}" in <span className="text-indigo-300">{job.location}</span>
                     </p>
 
-                    <div className="flex items-center gap-4 text-xs text-slate-400">
+                    <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
                       <span>Requested: {job.requested_count}</span>
                       <span>•</span>
                       <span>Rating ≥ {job.rating_min || 'Any'}</span>
+                      {job.status === 'completed' && job.leads_saved > 0 && (
+                        <>
+                          <span>•</span>
+                          <Link
+                            to="/leads"
+                            className="text-indigo-400 hover:text-indigo-300 font-semibold inline-flex items-center gap-1"
+                          >
+                            <span>Open in Leads</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </Link>
+                        </>
+                      )}
                     </div>
+
+                    {job.error_message && (
+                      <p className="text-xs text-red-400 bg-red-500/10 p-2 rounded-lg border border-red-500/20 mt-1">
+                        {job.error_message}
+                      </p>
+                    )}
                   </div>
 
                   {/* Telemetry Numbers */}
                   <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-slate-800 pt-3 md:pt-0 md:pl-4">
-                    <div className="text-center">
+                    <div className="text-center min-w-[50px]">
                       <p className="text-[10px] text-slate-400 uppercase font-semibold">Found</p>
                       <p className="text-sm font-bold text-white">{job.leads_found}</p>
                     </div>
-                    <div className="text-center">
+                    <div className="text-center min-w-[50px]">
                       <p className="text-[10px] text-emerald-400 uppercase font-semibold">Saved</p>
                       <p className="text-sm font-bold text-emerald-400">{job.leads_saved}</p>
                     </div>
-                    <div className="text-center">
+                    <div className="text-center min-w-[50px]">
                       <p className="text-[10px] text-amber-400 uppercase font-semibold">Duplicates</p>
                       <p className="text-sm font-bold text-amber-400">{job.duplicates_found}</p>
                     </div>
@@ -314,3 +358,4 @@ export default function LeadGeneration() {
     </div>
   );
 }
+
